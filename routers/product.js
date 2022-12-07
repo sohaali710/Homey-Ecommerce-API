@@ -1,6 +1,6 @@
 const express = require('express')
-const Auth = require('../middleware/auth')
 const Product = require('../models/Product')
+const Auth = require('../middleware/auth')
 const AdminAuth = require('../middleware/adminAuth')
 
 const router = new express.Router()
@@ -20,7 +20,7 @@ router.get('/all', async (req, res) => {
 //get products with promotions [home page]
 router.get('/promotions', async (req, res) => {
     try {
-        const products = await Product.find({promotions:true})
+        const products = await Product.find({ promotions: true })
 
         res.status(200).send(products)
     } catch (error) {
@@ -80,7 +80,6 @@ router.post('/newProduct', AdminAuth, async (req, res) => {
 
 //admin update product
 router.put("/:id", AdminAuth, async (req, res) => {
-
     try {
         const product = await Product.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
         // console.log(product)

@@ -10,14 +10,21 @@ const router = new express.Router()
 //#region ***user registration***
 //signup route
 router.post('/signup', async (req, res) => {
-    const user = new User(req.body)
     // console.log(req.body)
-
     try {
+        const isUserSignedBefore = await User.findOne({ email: req.body.email })
+
+        if (isUserSignedBefore) {
+            res.status(404).send("This user email is already signed in");
+            return;
+        }
+
+        const user = new User(req.body)
+
         await user.save()
         const token = await user.generateAuthToken()
 
-        console.log("user signed up successfully")
+        // console.log("user signed up successfully")
         res.status(201).send({ user, token })
     } catch (error) {
         res.status(400).send(error)
@@ -30,7 +37,7 @@ router.post('/login', async (req, res) => {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
 
-        console.log("user logged in")
+        // console.log("user logged in")
         res.send({ user, token })
     } catch (error) {
         res.status(400).send(error)
@@ -48,7 +55,7 @@ router.post('/logout', Auth, async (req, res) => {
         })
 
         await req.user.save()
-        console.log("logged out")
+        // console.log("logged out")
         res.send()
 
     } catch (error) {
@@ -64,7 +71,7 @@ router.post('/logoutAll', Auth, async (req, res) => {
         req.user.tokens = []
         await req.user.save()
 
-        console.log("logged out from all devices")
+        // console.log("logged out from all devices")
         res.send()
     } catch (error) {
         res.status(500).send()
@@ -89,6 +96,14 @@ router.get('/profile', Auth, async (req, res) => {
 router.put('/profile/update', Auth, async (req, res) => {
     try {
         const { user, token } = req
+
+        const isUserSignedBefore = await User.findOne({ email: req.body.email })
+
+        //don't update if the new email is already in db but not equal the auth user email
+        if (isUserSignedBefore && (isUserSignedBefore.email != user.email)) {
+            res.status(404).send("This user email is already signed in");
+            return;
+        }
 
         const updatedUser = await User.findByIdAndUpdate({ _id: user._id }, req.body, { new: true })
 

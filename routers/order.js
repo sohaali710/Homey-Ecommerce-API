@@ -13,12 +13,20 @@ router.post("", Auth, async (req, res) => {
 
         //find cart and user
         let cart = await Cart.findOne({ owner });
+
+        let orderItems = cart.items.map((item) => {
+            let orderI = ({ ...item }._doc);// create a new copy from the obj
+            delete orderI.image;
+            return orderI
+        })
+        console.log(orderItems)
+
         let user = req.user;
 
         if (cart) {
             const order = await Order.create({
                 owner,
-                items: cart.items,
+                items: orderItems,
                 bill: cart.bill,
             });
 
@@ -32,7 +40,8 @@ router.post("", Auth, async (req, res) => {
     }
 });
 
-//get all orders (same as cart but after confirm the order) sorted ascending by date [Admin]
+/** get all orders (same as cart (without product image) but after confirm the order ) sorted ascending 
+ * by date [Admin]*/
 router.get("/all", AdminAuth, async (req, res) => {
     try {
         const orders = await Order.find({}).sort({ createdAt: 1 });
@@ -78,5 +87,26 @@ router.put("/:id/:state", AdminAuth, async (req, res) => {
         res.status(400).send(error)
     }
 })
+
+//user can cancel order if it's in pending state
+router.delete("/:orderId", Auth, async (req, res) => {
+    try {
+        let order = await Order.findOne({ _id: req.params.orderId });
+        if (order) {
+            if (order.state == 'pending') {
+                await order.remove();
+            } else {
+                res.status(400).send("Can't remove this order");
+            }
+        } else {
+            res.status(400).send("No orders found");
+        }
+
+        res.status(200).send()
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
 
 module.exports = router;

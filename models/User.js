@@ -33,6 +33,14 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    gender: {
+        type: String,
+        required: true
+    },
+    image: {
+        type: String,
+        default: undefined
+    },
     tokens: [{
         token: {
             type: String,

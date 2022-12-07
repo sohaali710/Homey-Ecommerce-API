@@ -24,35 +24,57 @@ router.post('/newAdmin', async (req, res) => {
 
 //get all admins
 router.get("/", async (req, res) => {
-    const admins = await Admin.find({});
-    res.json(admins);
+    try {
+        const admins = await Admin.find({});
+
+        if (!admins) {
+            res.status(404).send("No admins found");
+        }
+
+        res.status(201).send(admins);
+    } catch (error) {
+        res.status(400).send("invalid request");
+    }
 });
 
 //get one admin
-router.get("/:id", (req, res) => {
-    Admin.findOne({ _id: req.params.id })
-        .then((response) => {
-            res.json(response);
-        })
-        .catch((err) => res.json({ message: 'An error occurred' }));
+router.get("/:id", async (req, res) => {
+    try {
+        const admin = await Admin.findOne({ _id: req.params.id })
+
+        if (!admin) {
+            res.status(404).send({ error: "Admin not found" })
+        }
+
+        res.status(200).send(admin)
+
+    } catch (error) {
+        res.status(400).send(error)
+    }
 });
 
 //update admin
-router.put("/:id", (req, res) => {
-    Admin.findOneAndUpdate({ _id: req.params.id }, req.body, {
-        new: true,
-    })
-        .then((response) => res.json(response))
-        .catch((err) => res.json({ message: 'An error occurred' }));
+router.put("/:id", async (req, res) => {
+    try {
+        const admin = await Admin.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+        // console.log(product)
+
+        await admin.save()
+        res.status(200).send({ admin })
+    } catch (error) {
+        res.status(400).send(error)
+    }
 });
 
 //delete admin
-router.delete("/:id", (req, res) => {
-    Admin.findOneAndDelete({ _id: req.params.id })
-        .then((response) => {
-            res.json({ message: response });
-        })
-        .catch((err) => res.json({ message: 'An error occurred' }));
+router.delete("/:id", async (req, res) => {
+    try {
+        await Admin.findOneAndDelete({ _id: req.params.id })
+
+        res.status(200).send()
+    } catch (error) {
+        res.status(400).send(error)
+    }
 });
 
 
