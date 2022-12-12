@@ -71,13 +71,13 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
     if (!user) {
         //when throw an error, it trigger the catch block in user route
-        throw new Error('Unable to log in')
+        throw new Error('Invalid username or password')
     }
 
     const isMatch = await bcrypt.compare(password, user.password)
 
     if (!isMatch) {
-        throw new Error('Unable to login')
+        throw new Error('Invalid username or password')
     }
 
     return user
@@ -87,6 +87,13 @@ userSchema.statics.findByCredentials = async (email, password) => {
 //to hash the password (before saving the user)
 // Mongoose "pre" middleware which runs before any action we specify (here is the "save" action)
 userSchema.pre('save', async function (next) {
+    const user = this
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+    next()
+})
+userSchema.pre('updateOne', async function (next) {
     const user = this
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)

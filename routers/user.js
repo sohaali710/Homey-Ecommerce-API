@@ -10,7 +10,6 @@ const router = new express.Router()
 //#region ***user registration***
 //signup route
 router.post('/signup', async (req, res) => {
-    // console.log(req.body)
     try {
         const isUserSignedBefore = await User.findOne({ email: req.body.email })
 
@@ -24,34 +23,28 @@ router.post('/signup', async (req, res) => {
         await user.save()
         const token = await user.generateAuthToken()
 
-        // console.log("user signed up successfully")
         res.status(201).send({ user, token })
     } catch (error) {
         res.status(400).send(error)
     }
 })
 
-//login route
 router.post('/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
 
-        // console.log("user logged in")
         res.send({ user, token })
     } catch (error) {
         res.status(400).send(error)
-        // console.log(error)
     }
 })
 
-//logout route
 router.post('/logout', Auth, async (req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token
             //to delete the one that equals to req.token (so log out the user from only this device or this session)
-            //**Notice that we used req.user.tokens (same as user schema model) and req.token (attach with the req from the frontend)*/
         })
 
         await req.user.save()
@@ -105,7 +98,7 @@ router.put('/profile/update', Auth, async (req, res) => {
             return;
         }
 
-        const updatedUser = await User.findByIdAndUpdate({ _id: user._id }, req.body, { new: true })
+        const updatedUser = await User.updateOne({ _id: user._id }, req.body, { new: true })
 
         await updatedUser.save()
         res.status(201).send({ updatedUser, token })
