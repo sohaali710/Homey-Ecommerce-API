@@ -54,23 +54,35 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     }],
+    promotions: {
+        type: Boolean,
+        default: false
+    },
+    reviews: [{
+        name: { type: String, required: true },
+        rating: { type: Number, required: true },
+        comment: { type: String },
+        userId: {
+            type: ObjectID,
+            required: true,
+            ref: 'User'
+        },
+        date: { type: Date, required: true }
+    }],
+    ratingAvg: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    favs: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     __v: {
         type: Number,
         select: false
     }
-    ,
-    promotions: {
-        type: Boolean,
-        default: false
-    }
-    // comments: [
-    //     { body: String, date: Date }
-    // ],
-    // hidden: Boolean,
-    // meta: {
-    //     votes: Number, //not a rating
-    //     favs: Number
-    // }
 }, {
     timestamps: true
 })

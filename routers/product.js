@@ -5,9 +5,54 @@ const AdminAuth = require('../middleware/adminAuth')
 
 const router = new express.Router()
 
-//#region *** GET [can be accessed by Usr & Admin] ***
-//get all products
-router.get('/all', async (req, res) => {
+const getAllProducts = async (req, res) => {
+    try {
+        const products = await Product.find({})
+
+        res.status(200).send(products)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+}
+
+router.get('/all', getAllProducts); // TODO: Replace it with (/user/allProducts,/admin/allProducts) in frontend
+
+
+//#region GET [User]
+router.get('/user/allProducts', Auth, getAllProducts);
+//add review
+router.put("/reviews/:id", Auth, async (req, res) => {
+    try {
+        const { _id: userId, name } = req.user
+        const { rating, comment } = req.body
+
+        const product = await Product.findOne({ _id: req.params.id })
+        // console.log(product)
+        if (!product) {
+            res.status(404).send({ error: "Product not found" })
+        }
+
+        let date = new Date();
+
+        let { reviews, ratingAvg } = product
+        reviews.push({ name, rating, comment, userId, date })
+
+        const totalReviews = reviews.reduce((acc, curr, arr) => {
+            return (acc + curr.rating);
+        }, 0)
+
+        product.ratingAvg = Math.round(totalReviews / reviews.length)
+
+        await product.save()
+        res.status(200).send({ reviews, ratingAvg })
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+//#endregion GET [User]
+
+//#region GET [Any one without Auth]
+router.get('/promotions', async (req, res) => {
     try {
         const products = await Product.find({})
 
@@ -17,18 +62,7 @@ router.get('/all', async (req, res) => {
     }
 })
 
-//get products with promotions [home page]
-router.get('/promotions', async (req, res) => {
-    try {
-        const products = await Product.find({ promotions: true })
-
-        res.status(200).send(products)
-    } catch (error) {
-        res.status(400).send(error)
-    }
-})
-
-//get one product (product details)
+//TODO: without Auth (promotions only) it still get the all products, you should edit it.
 router.get('/:id', async (req, res) => {
     try {
         const product = await Product.findOne({ _id: req.params.id })
@@ -43,8 +77,7 @@ router.get('/:id', async (req, res) => {
         res.status(400).send(error)
     }
 })
-
-//get products by category
+//TODO:same as previous one
 router.get('/category/:name', async (req, res) => {
     try {
         const productsByCategory = await Product.find({ category: req.params.name })
@@ -59,18 +92,18 @@ router.get('/category/:name', async (req, res) => {
         res.status(400).send(error)
     }
 })
-//#endregion *** GET [can be accessed by Usr & Admin] ***
+//#endregion GET [Any one without Auth]
 
 
 //#region [only accessed by Admin]
-// admin add product
+// router.get('/admin/allProducts', AdminAuth, getAllProducts);
 router.post('/newProduct', AdminAuth, async (req, res) => {
     try {
         // console.log(req.body)
         const product = new Product(req.body)
 
         await product.save()
-        res.status(200).send({ product, token })
+        res.status(200).send({ product })
 
     } catch (error) {
         res.status(400).send(error)
@@ -85,7 +118,7 @@ router.put("/:id", AdminAuth, async (req, res) => {
         // console.log(product)
 
         await product.save()
-        res.status(200).send({ product, token })
+        res.status(200).send({ product })
     } catch (error) {
         res.status(400).send(error)
     }
@@ -119,6 +152,8 @@ router.delete("/:id", AdminAuth, async (req, res) => {
     }
 })
 //#endregion [only accessed by Admin]
+
+
 
 
 //#region [db]
