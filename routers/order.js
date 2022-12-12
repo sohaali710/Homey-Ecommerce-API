@@ -1,36 +1,60 @@
 const express = require("express");
-const Order = require("../models/order");
+const Order = require("../models/Order");
 const Cart = require("../models/cart");
 const Auth = require("../middleware/auth");
 const AdminAuth = require("../middleware/adminAuth");
 
 const router = new express.Router();
 
-//user order
-router.post("", Auth, async (req, res) => {
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+
+//user add order
+//TODO:check the stripe checkout part with frontend
+router.post("/checkout", Auth, async (req, res) => {
     try {
         const owner = req.user._id;
 
         //find cart and user
         let cart = await Cart.findOne({ owner });
-
-        let orderItems = cart.items.map((item) => {
-            let orderI = ({ ...item }._doc);// create a new copy from the obj
-            delete orderI.image;
-            return orderI
-        })
-        console.log(orderItems)
-
         let user = req.user;
 
         if (cart) {
+            // stripe checkout
+            const session = await stripe.checkout.sessions.create({
+                line_items: req.body.items.map((item) => ({
+                    price_data: {
+                        currency: "LE",
+                        product_data: {
+                            name: item.name
+                            // ,
+                            // images: [item.image]
+                        },
+                        unit_amount: item.price,
+                    },
+                    quantity: item.quantity,
+                })),
+                mode: "payment",
+                success_url: "http://localhost:3006/success.html",
+                cancel_url: "http://localhost:3006/cancel.html",
+            })
+
+
+            //order items without product image
+            let orderItems = cart.items.map((item) => {
+                let orderI = ({ ...item }._doc);// create a new copy from the obj
+                delete orderI.image;
+                return orderI
+            })
+
             const order = await Order.create({
                 owner,
                 items: orderItems,
                 bill: cart.bill,
             });
 
-            res.status(201).send(order);
+            const data = await Cart.findByIdAndDelete({ _id: cart.id })
+            res.status(200).json(session)
+            return res.status(201).send(order)
         } else {
             res.status(400).send("No orders found");
         }
