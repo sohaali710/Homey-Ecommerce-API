@@ -7,7 +7,7 @@ const User = require('../models/User')
  * logout routes*/
 const auth = async (req, res, next) => {
   try {
-    //? How does these three lines actually work??
+    //get the token from header from Authorization key and verify it with the one in the db
     const token = req.header('Authorization').replace('Bearer ', '')
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
