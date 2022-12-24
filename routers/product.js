@@ -99,7 +99,7 @@ router.get('/category/:name', async (req, res) => {
 // router.get('/admin/allProducts', AdminAuth, getAllProducts);
 router.post('/newProduct', AdminAuth, async (req, res) => {
     try {
-        // console.log(req.body)
+        console.log(req.body)
         const product = new Product(req.body)
 
         await product.save()
