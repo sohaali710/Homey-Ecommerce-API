@@ -38,17 +38,9 @@ router.post("/checkout", Auth, async (req, res) => {
                 cancel_url: "http://localhost:3006/cancel.html",
             })
 
-
-            //order items without product image
-            let orderItems = cart.items.map((item) => {
-                let orderI = ({ ...item }._doc);// create a new copy from the obj
-                delete orderI.image;
-                return orderI
-            })
-
             const order = await Order.create({
                 owner,
-                items: orderItems,
+                items: cart.items,
                 bill: cart.bill,
             });
 
@@ -64,11 +56,17 @@ router.post("/checkout", Auth, async (req, res) => {
     }
 });
 
-/** get all orders (same as cart (without product image) but after confirm the order ) sorted ascending 
- * by date [Admin]*/
+/** get all orders sorted ascending by date [Admin]*/
 router.get("/all", AdminAuth, async (req, res) => {
     try {
-        const orders = await Order.find({}).sort({ createdAt: 1 });
+        const { startDate, endDate } = req.query;
+
+        const orders = await Order.find({
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        }).sort({ createdAt: 1 });
 
         if (!orders) {
             res.status(404).send("No orders found");
@@ -80,16 +78,31 @@ router.get("/all", AdminAuth, async (req, res) => {
     }
 });
 
-//get orders by state [Admin]
-router.get("/:state", AdminAuth, async (req, res) => {
-    const state = req.params.state;
+router.get("/:orderId", AdminAuth, async (req, res) => {
+    const { orderId } = req.params;
     try {
-        const ordersByState = await Order.find({ state: state });
+        const order = await Order.findOne({ _id: orderId });
 
-        if (!ordersByState) {
-            res.status(404).send({ error: `No ${state} orders not found` });
+        if (!order) {
+            res.status(404).send("No order found");
         }
 
+        res.status(201).send(order);
+    } catch (error) {
+        res.status(400).send("invalid request");
+    }
+});
+
+//get orders by state [Admin]
+router.get("/state/:state", AdminAuth, async (req, res) => {
+    const state = req.params.state;
+    try {
+        const ordersByState = await Order.find({ state });
+        // console.log(ordersByState)
+
+        if (!ordersByState) {
+            res.status(404).send({ error: `No ${state} orders found` });
+        }
         res.status(200).send(ordersByState);
     } catch (error) {
         res.status(400).send(error);
@@ -97,9 +110,10 @@ router.get("/:state", AdminAuth, async (req, res) => {
 });
 
 // modify order state
-router.put("/:id/:state", AdminAuth, async (req, res) => {
+router.put("/:id", AdminAuth, async (req, res) => {
+    const { state } = req.body;
     try {
-        const order = await Order.findOneAndUpdate({ _id: req.params.id }, { state: req.params.state }, { new: true })
+        const order = await Order.findOneAndUpdate({ _id: req.params.id }, { state: state }, { new: true })
 
         if (!order) {
             res.status(404).send({ error: "Order not found" })
