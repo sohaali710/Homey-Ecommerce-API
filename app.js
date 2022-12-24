@@ -7,8 +7,8 @@ app.use(express.static('public'))//to mention express that the frontend (static 
 const bodyparser = require('body-parser')
 app.use(bodyparser.urlencoded({ extended: false }))
 app.use(bodyparser.json())
+app.use(cors())
 
-app.use(cors({ origin: true, credentials: true }))
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 
@@ -18,8 +18,9 @@ const productRouter = require('./routers/product')
 const cartRouter = require('./routers/cart')
 const orderRouter = require('./routers/order')
 const favoritesRouter = require('./routers/favorites')
-
 const adminRouter = require('./routers/admin')
+const fileUploadRouter = require('./routers/fileUpload')
+
 const port = process.env.PORT
 
 
@@ -28,8 +29,9 @@ app.use('/products', productRouter);
 app.use('/cart', cartRouter);
 app.use('/order', orderRouter);
 app.use('/favorites', favoritesRouter);
-
 app.use('/admins', adminRouter);
+app.use('/file', fileUploadRouter);
+
 
 
 app.get('/', function (req, res) {
