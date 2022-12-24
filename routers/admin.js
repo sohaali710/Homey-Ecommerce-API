@@ -5,11 +5,11 @@ const AdminAuth = require('../middleware/adminAuth')
 const router = new express.Router()
 
 
-/********** CRUD operations on admins data *********/
+//#region CRUD operations on admins data
 //add new admin
 router.post('/newAdmin', async (req, res) => {
     const admin = new Admin(req.body)
-    console.log(req.body)
+    // console.log(req.body)
 
     try {
         await admin.save()
@@ -76,16 +76,16 @@ router.delete("/:id", async (req, res) => {
         res.status(400).send(error)
     }
 });
+//#endregion CRUD operations on admins data
 
 
-/********** admin login and logout *********/
+//#region admin login and logout
 //login route
 router.post('/login', async (req, res) => {
     try {
         const admin = await Admin.findByCredentials(req.body.email, req.body.password)
         const token = await admin.generateAdminAuthToken()
 
-        // console.log("admin logged in")
         res.send({ admin, token })
     } catch (error) {
         res.status(400).send(error)
@@ -101,7 +101,6 @@ router.post('/logout', AdminAuth, async (req, res) => {
         })
 
         await req.admin.save()
-        // console.log("logged out")
         res.send()
 
     } catch (error) {
@@ -115,11 +114,12 @@ router.post('/logoutAll', AdminAuth, async (req, res) => {
         req.admin.tokens = []
         await req.admin.save()
 
-        // console.log("logged out from all devices")
         res.send()
     } catch (error) {
         res.status(500).send()
     }
 })
+//#endregion admin login and logout
+
 
 module.exports = router
