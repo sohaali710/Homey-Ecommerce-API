@@ -7,7 +7,6 @@ const Admin = require('../models/Admin')
  * logout routes*/
 const adminAuth = async (req, res, next) => {
     try {
-        //? How does these three lines actually work??
         const token = req.header('Authorization').replace('Bearer ', '')
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         const admin = await Admin.findOne({ _id: decoded._id, 'tokens.token': token })
@@ -18,6 +17,7 @@ const adminAuth = async (req, res, next) => {
 
         req.token = token
         req.admin = admin
+        req.isAdmin = true;
 
         next()
 
