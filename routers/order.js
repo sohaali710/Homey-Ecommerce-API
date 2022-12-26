@@ -23,13 +23,13 @@ router.post("/checkout", Auth, async (req, res) => {
             const session = await stripe.checkout.sessions.create({
                 line_items: req.body.items.map((item) => ({
                     price_data: {
-                        currency: "LE",
+                        currency: "EGP",
                         product_data: {
                             name: item.name
                             // ,
                             // images: [item.image]
                         },
-                        unit_amount: item.price,
+                        unit_amount: item.price * 100,
                     },
                     quantity: item.quantity,
                 })),
@@ -45,8 +45,9 @@ router.post("/checkout", Auth, async (req, res) => {
             });
 
             const data = await Cart.findByIdAndDelete({ _id: cart.id })
-            res.status(200).json(session)
-            return res.status(201).send(order)
+
+            console.log(session)
+            return res.status(200).send(session)
         } else {
             res.status(400).send("No orders found");
         }

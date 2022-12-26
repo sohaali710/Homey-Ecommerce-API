@@ -128,7 +128,7 @@ router.put("/:id", AdminAuth, async (req, res) => {
 router.put("/promotions/:id", AdminAuth, async (req, res) => {
     try {
         const product = await Product.findOneAndUpdate({ _id: req.params.id }, { promotions: true }, { new: true })
-        console.log(product)
+        // console.log(product)
 
         if (!product) {
             res.status(404).send({ error: "Product not found" })
