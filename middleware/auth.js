@@ -18,7 +18,6 @@ const auth = async (req, res, next) => {
 
     req.token = token
     req.user = user
-    req.isAdmin = false;
 
     next()
 

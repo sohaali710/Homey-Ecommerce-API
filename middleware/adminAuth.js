@@ -17,7 +17,6 @@ const adminAuth = async (req, res, next) => {
 
         req.token = token
         req.admin = admin
-        req.isAdmin = true;
 
         next()
 
