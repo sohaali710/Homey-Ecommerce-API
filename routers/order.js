@@ -79,37 +79,6 @@ router.get("/all", AdminAuth, async (req, res) => {
     }
 });
 
-router.get("/:orderId", AdminAuth, async (req, res) => {
-    const { orderId } = req.params;
-    try {
-        const order = await Order.findOne({ _id: orderId });
-
-        if (!order) {
-            res.status(404).send("No order found");
-        }
-
-        res.status(201).send(order);
-    } catch (error) {
-        res.status(400).send("invalid request");
-    }
-});
-
-//get orders by state [Admin]
-router.get("/state/:state", AdminAuth, async (req, res) => {
-    const state = req.params.state;
-    try {
-        const ordersByState = await Order.find({ state });
-        // console.log(ordersByState)
-
-        if (!ordersByState) {
-            res.status(404).send({ error: `No ${state} orders found` });
-        }
-        res.status(200).send(ordersByState);
-    } catch (error) {
-        res.status(400).send(error);
-    }
-});
-
 // modify order state
 router.put("/:id", AdminAuth, async (req, res) => {
     const { state } = req.body;
@@ -127,6 +96,56 @@ router.put("/:id", AdminAuth, async (req, res) => {
     }
 })
 
+
+//#region [User & Admin]
+router.get("/:orderId", async (req, res) => {
+    const { orderId } = req.params;
+    try {
+        const order = await Order.findOne({ _id: orderId });
+
+        if (!order) {
+            res.status(404).send("No order found");
+        }
+
+        res.status(201).send(order);
+    } catch (error) {
+        res.status(400).send("invalid request");
+    }
+});
+
+//get orders by state
+router.get("/state/:state", async (req, res) => {
+    const state = req.params.state;
+    try {
+        const ordersByState = await Order.find({ state });
+        // console.log(ordersByState)
+
+        if (!ordersByState) {
+            res.status(404).send({ error: `No ${state} orders found` });
+        }
+        res.status(200).send(ordersByState);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+//#endregion [User & Admin]
+
+
+/** get all user orders sorted ascending [User]*/
+router.get("/user/orders", Auth, async (req, res) => {
+    const { user } = req;
+    try {
+        const orders = await Order.find({ owner: user._id }).sort({ createdAt: 1 });
+
+        if (!orders) {
+            res.status(404).send("No orders found");
+        }
+
+        res.status(201).send(orders);
+    } catch (error) {
+        res.status(400).send("invalid request");
+    }
+});
 //user can cancel order if it's in pending state
 router.delete("/:orderId", Auth, async (req, res) => {
     try {
@@ -146,6 +165,7 @@ router.delete("/:orderId", Auth, async (req, res) => {
         res.status(400).send(error)
     }
 })
+
 
 
 module.exports = router;
