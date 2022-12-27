@@ -60,7 +60,7 @@ router.get('/promotions', async (req, res) => {
     }
 })
 
-//TODO: without Auth (promotions only) it still get the all products, you should edit it.
+
 router.get('/:id', async (req, res) => {
     try {
         const product = await Product.findOne({ _id: req.params.id })
@@ -75,7 +75,8 @@ router.get('/:id', async (req, res) => {
         res.status(400).send(error)
     }
 })
-//TODO:same as previous one
+
+//TODO: without Auth (promotions only) it still get the all products, you should edit it.
 router.get('/category/:name', async (req, res) => {
     try {
         const productsByCategory = await Product.find({ category: req.params.name })
