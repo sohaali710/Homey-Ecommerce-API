@@ -15,11 +15,9 @@ const getAllProducts = async (req, res) => {
     }
 }
 
-router.get('/all', getAllProducts); // TODO: Replace it with (/user/allProducts,/admin/allProducts) in frontend
-
 
 //#region GET [User]
-router.get('/user/allProducts', Auth, getAllProducts);
+router.get('/user/all-products', Auth, getAllProducts);
 //add review
 router.put("/reviews/:id", Auth, async (req, res) => {
     try {
@@ -96,7 +94,8 @@ router.get('/category/:name', async (req, res) => {
 
 
 //#region [only accessed by Admin]
-// router.get('/admin/allProducts', AdminAuth, getAllProducts);
+router.get('/admin/all-products', AdminAuth, getAllProducts);
+
 router.post('/newProduct', AdminAuth, async (req, res) => {
     try {
         console.log(req.body)
