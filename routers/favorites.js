@@ -27,10 +27,10 @@ router.get("", Auth, async (req, res) => {
 //add (or remove) item to favorites (and create favorites [in db] if it's the first item)
 router.post("", Auth, async (req, res) => {
     const owner = req.user._id;
-    const  productId  = req.body._id;
-       console.log(owner);
-       console.log(req.body._id);
-       console.log(productId);
+    const productId = req.body._id;
+    console.log(owner);
+    console.log(req.body._id);
+    console.log(productId);
     try {
         const favorites = await Favorites.findOne({ owner });
 
