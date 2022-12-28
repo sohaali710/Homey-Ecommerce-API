@@ -4,6 +4,8 @@ const Auth = require('../middleware/auth')
 const AdminAuth = require('../middleware/adminAuth')
 const Cart = require('../models/cart')
 
+const bcrypt = require('bcryptjs')
+
 const router = new express.Router()
 
 
@@ -100,9 +102,15 @@ router.put('/profile/update', Auth, async (req, res) => {
             return;
         }
 
-        const updatedUser = await User.updateOne({ _id: user._id }, req.body, { new: true })
+
+        if (req.body.password) {
+            const hashedPassword = await bcrypt.hash(user.password, 8)
+            req.body.password = hashedPassword
+        }
+        const updatedUser = await User.findOneAndUpdate({ _id: user._id }, req.body, { new: true })
 
         await updatedUser.save()
+
         res.status(201).send({ updatedUser, token })
 
     } catch (error) {
