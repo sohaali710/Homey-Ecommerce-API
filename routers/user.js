@@ -120,19 +120,4 @@ router.put('/profile/update', Auth, async (req, res) => {
 //#endregion  ***user profile***
 
 
-//#region  ***get user by cart owner [admin] ***
-router.get('/cartOwner/:id', AdminAuth, async (req, res) => {
-    try {
-        const cart = await Cart.findOne({ _id: req.params.id });
-        const userId = cart.owner;
-        const user = await User.findOne({ _id: userId });
-
-        res.status(201).send({ user })
-    } catch (error) {
-        res.status(500).send()
-    }
-})
-//#endregion  ***get user by cart owner***
-
-
 module.exports = router

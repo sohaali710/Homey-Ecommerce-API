@@ -156,6 +156,19 @@ router.delete("/:id", AdminAuth, async (req, res) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 //#region [db]
 // add list of products 
 router.post('/addListOfProducts', AdminAuth, async (req, res) => {

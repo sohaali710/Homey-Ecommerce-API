@@ -9,7 +9,6 @@ const router = new express.Router();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 //user add order
-//TODO:check the stripe checkout part with frontend
 router.post("/checkout", Auth, async (req, res) => {
     try {
         const owner = req.user._id;
@@ -26,8 +25,6 @@ router.post("/checkout", Auth, async (req, res) => {
                         currency: "EGP",
                         product_data: {
                             name: item.name
-                            // ,
-                            // images: [item.image]
                         },
                         unit_amount: item.price * 100,
                     },

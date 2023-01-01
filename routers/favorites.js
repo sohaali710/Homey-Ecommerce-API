@@ -28,9 +28,7 @@ router.get("", Auth, async (req, res) => {
 router.post("", Auth, async (req, res) => {
     const owner = req.user._id;
     const productId = req.body._id;
-    console.log(owner);
-    console.log(req.body._id);
-    console.log(productId);
+
     try {
         const favorites = await Favorites.findOne({ owner });
 
@@ -92,10 +90,8 @@ router.delete("/", Auth, async (req, res) => {
 
             // favorites = await favorites.save();
             await favorites.save();
-            console.log("sssssss");
             res.status(200).send(favorites);
         } else {
-            console.log("aaaaaaaaa");
             res.status(404).send("item not found");
         }
     } catch (error) {
