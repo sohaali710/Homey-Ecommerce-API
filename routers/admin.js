@@ -6,7 +6,6 @@ const router = new express.Router()
 
 
 //#region CRUD operations on admins data
-//add new admin
 router.post('/newAdmin', async (req, res) => {
     const admin = new Admin(req.body)
     // console.log(req.body)
@@ -24,7 +23,6 @@ router.post('/newAdmin', async (req, res) => {
     }
 })
 
-//get all admins
 router.get("/", async (req, res) => {
     try {
         const admins = await Admin.find({});
@@ -39,7 +37,6 @@ router.get("/", async (req, res) => {
     }
 });
 
-//get one admin
 router.get("/:id", async (req, res) => {
     try {
         const admin = await Admin.findOne({ _id: req.params.id })
@@ -55,11 +52,9 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-//update admin
 router.put("/:id", async (req, res) => {
     try {
         const admin = await Admin.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
-        // console.log(product)
 
         await admin.save()
         res.status(200).send({ admin })
@@ -68,7 +63,6 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-//delete admin
 router.delete("/:id", async (req, res) => {
     try {
         await Admin.findOneAndDelete({ _id: req.params.id })
@@ -82,7 +76,6 @@ router.delete("/:id", async (req, res) => {
 
 
 //#region admin login and logout
-//login route
 router.post('/login', async (req, res) => {
     try {
         const admin = await Admin.findByCredentials(req.body.email, req.body.password)
@@ -96,7 +89,6 @@ router.post('/login', async (req, res) => {
     }
 })
 
-//logout route
 router.post('/logout', AdminAuth, async (req, res) => {
     try {
         req.admin.tokens = req.admin.tokens.filter((token) => {

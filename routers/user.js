@@ -10,7 +10,6 @@ const router = new express.Router()
 
 
 //#region ***user registration***
-//signup route
 router.post('/signup', async (req, res) => {
     try {
         const isUserSignedBefore = await User.findOne({ email: req.body.email })
@@ -78,7 +77,6 @@ router.post('/logoutAll', Auth, async (req, res) => {
 
 
 //#region  ***user profile***
-//get profile
 router.get('/profile', Auth, async (req, res) => {
     try {
         const { user, token } = req
@@ -89,7 +87,6 @@ router.get('/profile', Auth, async (req, res) => {
     }
 })
 
-//update profile
 router.put('/profile/update', Auth, async (req, res) => {
     try {
         const { user, token } = req
