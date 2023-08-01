@@ -30,12 +30,10 @@
 
 
 
-##### Server deployed domain:
+#### Server deployed domain:
 
 ```
-
 https://homey-ecommerce-api.onrender.com/
-
 ```
 
 ## APIS
