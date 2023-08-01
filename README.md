@@ -44,6 +44,88 @@ https://homey-ecommerce-api.onrender.com/
 
 ## APIS
 
+### Admin
+
+- Login
+
+  method --> POST
+  
+  access --> private [Admin]
+```
+https://homey-ecommerce-api.onrender.com/admin/login
+```
+
+- Logout
+
+  method --> POST
+  
+  access --> private [Admin]
+```
+https://homey-ecommerce-api.onrender.com/admin/logout
+```
+
+
+<hr/>
+
+### User
+
+- User signup
+
+  method --> POST
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/user/signup
+```
+
+- User login
+
+  method --> POST
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/user/login
+```
+
+- User logout
+
+  method --> POST
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/user/logout
+```
+
+- User logout from all sessions (devices) 
+
+  method --> POST
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/user/logout-all
+```
+
+- Get user profile
+
+  method --> GET
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/user/profile
+```
+
+- Update user profile
+
+  method --> PUT
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/user/profile/update
+```
+
+
+<hr/>
+
 ### Products
 
 - Get products with promotions
@@ -66,8 +148,8 @@ https://homey-ecommerce-api.onrender.com/products/user/all-products
 ```
 
 
-- Only accessed by Admin
-  - Get all products
+#### Only accessed by Admin
+- Get all products
 
     method --> GET
   
@@ -86,3 +168,80 @@ https://homey-ecommerce-api.onrender.com/products/newProduct
 ```
 
 
+- Update product
+
+    method --> PUT
+  
+    access --> private [Admin]
+```
+https://homey-ecommerce-api.onrender.com/products/:id
+```
+
+- Delete product
+
+    method --> DELETE
+  
+    access --> private [Admin]
+```
+https://homey-ecommerce-api.onrender.com/products/:id
+```
+
+- Add promotions to product
+
+    method --> DELETE
+  
+    access --> private [Admin]
+```
+https://homey-ecommerce-api.onrender.com/products/promotions/:id
+```
+
+
+### Order
+
+- Order checkout (using stripe payment gate)
+
+  method --> POST
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/order/checkout
+```
+
+- Get order  (using stripe payment gate)
+
+  method --> GET
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/order/user/orders
+```
+
+- Get all previous orders (by admin)
+
+  method --> GET
+  
+  access --> private [Admin]
+```
+https://homey-ecommerce-api.onrender.com/order/all
+```
+
+- Modify order state
+
+  method --> PUT
+  
+  access --> private [Admin]
+```
+https://homey-ecommerce-api.onrender.com/order/:id
+```
+
+- Get order by id (by his user or by admin)
+
+  method --> GET
+  
+  access --> private [User & Admin]
+```
+https://homey-ecommerce-api.onrender.com/order/:id
+```
+
+
+<hr/>
