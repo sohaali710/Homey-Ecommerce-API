@@ -4,7 +4,7 @@
   "description": "Homey E-commerce Web Application API",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "env-cmd -f ./config/dev.env nodemon src/app.js",
     "start": "node --max-http-header-size=80000 src/app.js"
   },
