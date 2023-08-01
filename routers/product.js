@@ -154,36 +154,4 @@ router.delete("/:id", AdminAuth, async (req, res) => {
 //#endregion [only accessed by Admin]
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//#region [db]
-// add list of products 
-router.post('/addListOfProducts', AdminAuth, async (req, res) => {
-    try {
-        const products = await Product.insertMany(req.body)
-
-        await product.save()
-        res.status(200).send({})
-
-    } catch (error) {
-        res.status(400).send(error)
-    }
-
-})
-//#endregion [db]
-
-
 module.exports = router
