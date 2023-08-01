@@ -3,14 +3,11 @@
 ### Admin
 - Can login with his pre-registered email and password.
 - Can view products page.
-
-    - Search by name.
     - View all products.
     - Create, update, edit and delete any product.
-    - Create product with title, image, price, details.
   
 - Can view orders page (pending, accepted, rejected).
-    - View all orders (username, date, total price, product titles only).
+    - View all orders (username, date, total price, product title and image).
     - Take an action to modify order state.
   
 ### User
@@ -20,7 +17,6 @@
 - Can register with his (email. username, password, image, gender).
 - Can view [products page and profile] on login.
 - Products page
-    - Search by name.
     - View all products.
     - Add products to his cart.
     - View added products and checkout to make order.
@@ -207,7 +203,7 @@ https://homey-ecommerce-api.onrender.com/products/promotions/:id
 https://homey-ecommerce-api.onrender.com/order/checkout
 ```
 
-- Get order  (using stripe payment gate)
+- User get his all previous orders
 
   method --> GET
   
@@ -216,7 +212,18 @@ https://homey-ecommerce-api.onrender.com/order/checkout
 https://homey-ecommerce-api.onrender.com/order/user/orders
 ```
 
-- Get all previous orders (by admin)
+- User cancel (delete) order if it's in pending state
+
+  method --> Delete
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/order/user/:orderId
+```
+
+
+
+- Get all orders (by admin)
 
   method --> GET
   
@@ -231,8 +238,19 @@ https://homey-ecommerce-api.onrender.com/order/all
   
   access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/order/:id
+https://homey-ecommerce-api.onrender.com/order/:orderId
 ```
+
+- Filter Orders by state
+
+  method --> GET
+  
+  access --> private [Admin]
+```
+https://homey-ecommerce-api.onrender.com/order/state/:state
+```
+
+
 
 - Get order by id (by his user or by admin)
 
@@ -240,8 +258,36 @@ https://homey-ecommerce-api.onrender.com/order/:id
   
   access --> private [User & Admin]
 ```
-https://homey-ecommerce-api.onrender.com/order/:id
+https://homey-ecommerce-api.onrender.com/order/:orderId
 ```
 
 
 <hr/>
+
+### Favorites
+- Get all products in favorites
+
+  method --> GET
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/favorites
+```
+
+- Add product in favorites
+
+  method --> POST
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/favorites
+```
+
+- Remove product from favorites
+
+  method --> DELETE
+  
+  access --> private [User]
+```
+https://homey-ecommerce-api.onrender.com/favorites
+```
