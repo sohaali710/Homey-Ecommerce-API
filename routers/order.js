@@ -1,6 +1,6 @@
 const express = require("express");
 const Order = require("../models/Order");
-const Cart = require("../models/cart");
+const Cart = require("../models/Cart");
 const Auth = require("../middleware/auth");
 const AdminAuth = require("../middleware/adminAuth");
 

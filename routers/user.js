@@ -2,7 +2,7 @@ const express = require('express')
 const User = require('../models/User')
 const Auth = require('../middleware/auth')
 const AdminAuth = require('../middleware/adminAuth')
-const Cart = require('../models/cart')
+const Cart = require('../models/Cart')
 
 const bcrypt = require('bcryptjs')
 
