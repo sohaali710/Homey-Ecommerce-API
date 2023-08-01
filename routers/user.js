@@ -62,7 +62,7 @@ router.post('/logout', Auth, async (req, res) => {
 //the previous logout route only logs the user out of the current session
 //to fix that we use logout all :
 //logout from all devices (clears the entire tokens array)
-router.post('/logoutAll', Auth, async (req, res) => {
+router.post('/logout-all', Auth, async (req, res) => {
     try {
         req.user.tokens = []
         await req.user.save()
