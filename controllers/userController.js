@@ -1,6 +1,5 @@
 const express = require('express')
 const User = require('../models/userModel')
-const Cart = require('../models/cartModel')
 
 const bcrypt = require('bcryptjs')
 
