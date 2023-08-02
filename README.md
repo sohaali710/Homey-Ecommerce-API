@@ -28,14 +28,11 @@
     - Cancel order if pending.
 
 
-
-
-##### Server deployed domain:
+      
+### Server domain:
 
 ```
-
 https://homey-ecommerce-api.onrender.com/
-
 ```
 
 ## APIS
