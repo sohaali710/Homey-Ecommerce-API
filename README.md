@@ -26,6 +26,10 @@
     - Edit his own info.
     - View his orders (accepted, rejected, pending).
     - Cancel order if pending.
+- Favorites
+    - Add product to favories.
+    - remove product from favories.
+    - View favorites page.
 
 
       
