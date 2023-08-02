@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const User = require('../models/User')
+const User = require('../models/userModel')
 
 
 // It's a custom middleware that requires a token sent from the frontend, then verify this token //

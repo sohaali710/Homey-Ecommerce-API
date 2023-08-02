@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const Admin = require('../models/Admin')
+const Admin = require('../models/adminModel')
 
 
 // It's a custom middleware that requires a token sent from the frontend, then verify this token //

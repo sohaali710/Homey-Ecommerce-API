@@ -1,15 +1,11 @@
 const express = require("express");
-const Order = require("../models/Order");
-const Cart = require("../models/Cart");
-const Auth = require("../middleware/auth");
-const AdminAuth = require("../middleware/adminAuth");
-
-const router = new express.Router();
+const Order = require("../models/orderModel");
+const Cart = require("../models/cartModel");
 
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 //user add order
-router.post("/checkout", Auth, async (req, res) => {
+exports.addOrder = async (req, res) => {
     try {
         const owner = req.user._id;
 
@@ -52,10 +48,46 @@ router.post("/checkout", Auth, async (req, res) => {
         console.log(error);
         res.status(400).send("invalid request");
     }
-});
+}
+
+/** get all user orders sorted ascending [User]*/
+exports.getAllUserOrders = async (req, res) => {
+    const { user } = req;
+    try {
+        const orders = await Order.find({ owner: user._id }).sort({ createdAt: 1 });
+
+        if (!orders) {
+            res.status(404).send("No orders found");
+        }
+
+        res.status(201).send(orders);
+    } catch (error) {
+        res.status(400).send("invalid request");
+    }
+}
+//user can cancel order if it's in pending state
+exports.deletePendingOrder = async (req, res) => {
+    try {
+        let order = await Order.findOne({ _id: req.params.orderId });
+        if (order) {
+            if (order.state == 'pending') {
+                await order.remove();
+            } else {
+                res.status(400).send("Can't remove this order");
+            }
+        } else {
+            res.status(400).send("No orders found");
+        }
+
+        res.status(200).send()
+    } catch (error) {
+        res.status(400).send(error)
+    }
+}
+
 
 /** get all orders sorted ascending by date [Admin]*/
-router.get("/all", AdminAuth, async (req, res) => {
+exports.getAllOrders = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
 
@@ -74,10 +106,10 @@ router.get("/all", AdminAuth, async (req, res) => {
     } catch (error) {
         res.status(400).send("invalid request");
     }
-});
+}
 
 // modify order state
-router.put("/:id", AdminAuth, async (req, res) => {
+exports.modifyOrderState = async (req, res) => {
     const { state } = req.body;
     try {
         const order = await Order.findOneAndUpdate({ _id: req.params.id }, { state: state }, { new: true })
@@ -91,11 +123,11 @@ router.put("/:id", AdminAuth, async (req, res) => {
     } catch (error) {
         res.status(400).send(error)
     }
-})
+}
 
 
 //#region [User & Admin]
-router.get("/:orderId", async (req, res) => {
+exports.getOrder = async (req, res) => {
     const { orderId } = req.params;
     try {
         const order = await Order.findOne({ _id: orderId });
@@ -108,10 +140,10 @@ router.get("/:orderId", async (req, res) => {
     } catch (error) {
         res.status(400).send("invalid request");
     }
-});
+}
 
 //get orders by state
-router.get("/state/:state", async (req, res) => {
+exports.getOrdersByState = async (req, res) => {
     const state = req.params.state;
     try {
         const ordersByState = await Order.find({ state });
@@ -124,45 +156,5 @@ router.get("/state/:state", async (req, res) => {
     } catch (error) {
         res.status(400).send(error);
     }
-});
+}
 //#endregion [User & Admin]
-
-
-/** get all user orders sorted ascending [User]*/
-router.get("/user/orders", Auth, async (req, res) => {
-    const { user } = req;
-    try {
-        const orders = await Order.find({ owner: user._id }).sort({ createdAt: 1 });
-
-        if (!orders) {
-            res.status(404).send("No orders found");
-        }
-
-        res.status(201).send(orders);
-    } catch (error) {
-        res.status(400).send("invalid request");
-    }
-});
-//user can cancel order if it's in pending state
-router.delete("/:orderId", Auth, async (req, res) => {
-    try {
-        let order = await Order.findOne({ _id: req.params.orderId });
-        if (order) {
-            if (order.state == 'pending') {
-                await order.remove();
-            } else {
-                res.status(400).send("Can't remove this order");
-            }
-        } else {
-            res.status(400).send("No orders found");
-        }
-
-        res.status(200).send()
-    } catch (error) {
-        res.status(400).send(error)
-    }
-})
-
-
-
-module.exports = router;

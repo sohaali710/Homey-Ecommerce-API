@@ -1,12 +1,9 @@
 const express = require("express");
-const Favorites = require('../models/Favorites')
-const Product = require('../models/Product')
-const Auth = require("../middleware/auth");
-
-const router = new express.Router();
+const Favorites = require('../models/favoritesModel')
+const Product = require('../models/productModel')
 
 //get user favorite products
-router.get("", Auth, async (req, res) => {
+exports.getUserFavorites = async (req, res) => {
     const owner = req.user._id;
 
     try {
@@ -21,11 +18,11 @@ router.get("", Auth, async (req, res) => {
     } catch (error) {
         res.status(500).send();
     }
-});
+}
 
 
 //add (or remove) item to favorites (and create favorites [in db] if it's the first item)
-router.post("", Auth, async (req, res) => {
+exports.addRemoveFavorite = async (req, res) => {
     const owner = req.user._id;
     const productId = req.body._id;
 
@@ -72,11 +69,11 @@ router.post("", Auth, async (req, res) => {
         console.log(error);
         res.status(500).send("something went wrong");
     }
-});
+}
 
 
 //delete one item in user favorites
-router.delete("/", Auth, async (req, res) => {
+exports.deleteFavItem = async (req, res) => {
     const owner = req.user._id;
     const productId = req.query.productId;
     console.log(req.query.productId);
@@ -99,7 +96,4 @@ router.delete("/", Auth, async (req, res) => {
         console.log("ffffffffffff");
         res.status(400).send();
     }
-});
-
-
-module.exports = router;
+}

@@ -1,16 +1,12 @@
 const express = require('express')
-const User = require('../models/User')
-const Auth = require('../middleware/auth')
-const AdminAuth = require('../middleware/adminAuth')
-const Cart = require('../models/Cart')
+const User = require('../models/userModel')
+const Cart = require('../models/cartModel')
 
 const bcrypt = require('bcryptjs')
 
-const router = new express.Router()
-
 
 //#region ***user registration***
-router.post('/signup', async (req, res) => {
+exports.signup = async (req, res) => {
     try {
         const isUserSignedBefore = await User.findOne({ email: req.body.email })
 
@@ -29,9 +25,9 @@ router.post('/signup', async (req, res) => {
     } catch (error) {
         res.status(400).send(error)
     }
-})
+}
 
-router.post('/login', async (req, res) => {
+exports.login = async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
@@ -41,9 +37,9 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         res.status(400).send(error)
     }
-})
+}
 
-router.post('/logout', Auth, async (req, res) => {
+exports.logout = async (req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token
@@ -57,12 +53,12 @@ router.post('/logout', Auth, async (req, res) => {
     } catch (error) {
         res.status(500).send()
     }
-})
+}
 
 //the previous logout route only logs the user out of the current session
 //to fix that we use logout all :
 //logout from all devices (clears the entire tokens array)
-router.post('/logout-all', Auth, async (req, res) => {
+exports.logoutFromAllSessions = async (req, res) => {
     try {
         req.user.tokens = []
         await req.user.save()
@@ -72,12 +68,12 @@ router.post('/logout-all', Auth, async (req, res) => {
     } catch (error) {
         res.status(500).send()
     }
-})
+}
 //#endregion  ***user registration***
 
 
 //#region  ***user profile***
-router.get('/profile', Auth, async (req, res) => {
+exports.getProfile = async (req, res) => {
     try {
         const { user, token } = req
 
@@ -85,9 +81,9 @@ router.get('/profile', Auth, async (req, res) => {
     } catch (error) {
         res.status(500).send()
     }
-})
+}
 
-router.put('/profile/update', Auth, async (req, res) => {
+exports.updateProfile = async (req, res) => {
     try {
         const { user, token } = req
 
@@ -113,8 +109,5 @@ router.put('/profile/update', Auth, async (req, res) => {
     } catch (error) {
         res.status(500).send()
     }
-})
+}
 //#endregion  ***user profile***
-
-
-module.exports = router

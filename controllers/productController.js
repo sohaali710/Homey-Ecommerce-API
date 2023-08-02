@@ -1,11 +1,7 @@
 const express = require('express')
-const Product = require('../models/Product')
-const Auth = require('../middleware/auth')
-const AdminAuth = require('../middleware/adminAuth')
+const Product = require('../models/productModel')
 
-const router = new express.Router()
-
-const getAllProducts = async (req, res) => {
+exports.getAllProducts = async (req, res) => {
     try {
         const products = await Product.find({})
 
@@ -15,11 +11,8 @@ const getAllProducts = async (req, res) => {
     }
 }
 
-
-//#region GET [User]
-router.get('/user/all-products', Auth, getAllProducts);
 //add review
-router.put("/reviews/:id", Auth, async (req, res) => {
+exports.addReview = async (req, res) => {
     try {
         const { _id: userId, name } = req.user
         const { rating, comment } = req.body
@@ -46,11 +39,13 @@ router.put("/reviews/:id", Auth, async (req, res) => {
     } catch (error) {
         res.status(400).send(error)
     }
-})
+}
 //#endregion GET [User]
 
+
 //#region GET [Any one without Auth]
-router.get('/promotions', async (req, res) => {
+// get all products with promotions
+exports.getAllPromotions = async (req, res) => {
     try {
         const products = await Product.find({})
 
@@ -58,10 +53,10 @@ router.get('/promotions', async (req, res) => {
     } catch (error) {
         res.status(400).send(error)
     }
-})
+}
 
-
-router.get('/:id', async (req, res) => {
+// get specific product with promotion by id
+exports.getPromotionById = async (req, res) => {
     try {
         const product = await Product.findOne({ _id: req.params.id })
 
@@ -74,10 +69,11 @@ router.get('/:id', async (req, res) => {
     } catch (error) {
         res.status(400).send(error)
     }
-})
+}
 
+// get category by name (promotions)
 //TODO: without Auth (promotions only) it still get the all products, you should edit it.
-router.get('/category/:name', async (req, res) => {
+exports.getCategoryByNamePromo = async (req, res) => {
     try {
         const productsByCategory = await Product.find({ category: req.params.name })
 
@@ -90,14 +86,12 @@ router.get('/category/:name', async (req, res) => {
     } catch (error) {
         res.status(400).send(error)
     }
-})
+}
 //#endregion GET [Any one without Auth]
 
 
 //#region [only accessed by Admin]
-router.get('/admin/all-products', AdminAuth, getAllProducts);
-
-router.post('/newProduct', AdminAuth, async (req, res) => {
+exports.addNewProduct = async (req, res) => {
     try {
         console.log(req.body)
         const product = new Product(req.body)
@@ -109,10 +103,10 @@ router.post('/newProduct', AdminAuth, async (req, res) => {
         res.status(400).send(error)
     }
 
-})
+}
 
 //admin update product
-router.put("/:id", AdminAuth, async (req, res) => {
+exports.updateProducts = async (req, res) => {
     try {
         const product = await Product.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
         // console.log(product)
@@ -122,10 +116,21 @@ router.put("/:id", AdminAuth, async (req, res) => {
     } catch (error) {
         res.status(400).send(error)
     }
-})
+}
+
+// admin delete product
+exports.deleteProduct = async (req, res) => {
+    try {
+        await Product.findByIdAndRemove({ _id: req.params.id })
+
+        res.status(200).send()
+    } catch (error) {
+        res.status(400).send(error)
+    }
+}
 
 //add promotions to product
-router.put("/promotions/:id", AdminAuth, async (req, res) => {
+exports.addPromotion = async (req, res) => {
     try {
         const product = await Product.findOneAndUpdate({ _id: req.params.id }, { promotions: true }, { new: true })
         // console.log(product)
@@ -139,19 +144,5 @@ router.put("/promotions/:id", AdminAuth, async (req, res) => {
     } catch (error) {
         res.status(400).send(error)
     }
-})
-
-// admin delete product
-router.delete("/:id", AdminAuth, async (req, res) => {
-    try {
-        await Product.findByIdAndRemove({ _id: req.params.id })
-
-        res.status(200).send()
-    } catch (error) {
-        res.status(400).send(error)
-    }
-})
+}
 //#endregion [only accessed by Admin]
-
-
-module.exports = router
