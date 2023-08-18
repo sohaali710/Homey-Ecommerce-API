@@ -26,13 +26,23 @@
     - Edit his own info.
     - View his orders (accepted, rejected, pending).
     - Cancel order if pending.
+- Favorites
+    - Add product to favories.
+    - remove product from favories.
+    - View favorites page.
 
-
+### To run the server locally:
       
-### Server domain:
+#### 1) Install packages :
+   
+```
+npm i
+```
+
+#### 2) Run the server :
 
 ```
-https://homey-ecommerce-api.onrender.com/
+npm run dev
 ```
 
 ## APIS
@@ -45,7 +55,7 @@ https://homey-ecommerce-api.onrender.com/
   
   access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/admin/login
+/admin/login
 ```
 
 - Logout
@@ -54,7 +64,7 @@ https://homey-ecommerce-api.onrender.com/admin/login
   
   access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/admin/logout
+/admin/logout
 ```
 
 
@@ -68,7 +78,7 @@ https://homey-ecommerce-api.onrender.com/admin/logout
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/user/signup
+/user/signup
 ```
 
 - User login
@@ -77,7 +87,7 @@ https://homey-ecommerce-api.onrender.com/user/signup
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/user/login
+/user/login
 ```
 
 - User logout
@@ -86,7 +96,7 @@ https://homey-ecommerce-api.onrender.com/user/login
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/user/logout
+/user/logout
 ```
 
 - User logout from all sessions (devices) 
@@ -95,7 +105,7 @@ https://homey-ecommerce-api.onrender.com/user/logout
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/user/logout-all
+/user/logout-all
 ```
 
 - Get user profile
@@ -104,7 +114,7 @@ https://homey-ecommerce-api.onrender.com/user/logout-all
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/user/profile
+/user/profile
 ```
 
 - Update user profile
@@ -113,7 +123,7 @@ https://homey-ecommerce-api.onrender.com/user/profile
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/user/profile/update
+/user/profile/update
 ```
 
 
@@ -127,7 +137,7 @@ https://homey-ecommerce-api.onrender.com/user/profile/update
   
   access --> public
 ```
-https://homey-ecommerce-api.onrender.com/products/promotions
+/products/promotions
 ```
 
 
@@ -137,7 +147,7 @@ https://homey-ecommerce-api.onrender.com/products/promotions
   
   access --> private [logged in user]
 ```
-https://homey-ecommerce-api.onrender.com/products/user/all-products
+/products/user/all-products
 ```
 
 
@@ -148,7 +158,7 @@ https://homey-ecommerce-api.onrender.com/products/user/all-products
   
     access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/products/admin/all-products
+/products/admin/all-products
 ```
 
 - Create new product
@@ -157,7 +167,7 @@ https://homey-ecommerce-api.onrender.com/products/admin/all-products
   
     access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/products/newProduct
+/products/newProduct
 ```
 
 
@@ -167,7 +177,7 @@ https://homey-ecommerce-api.onrender.com/products/newProduct
   
     access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/products/:id
+/products/:id
 ```
 
 - Delete product
@@ -176,7 +186,7 @@ https://homey-ecommerce-api.onrender.com/products/:id
   
     access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/products/:id
+/products/:id
 ```
 
 - Add promotions to product
@@ -185,7 +195,7 @@ https://homey-ecommerce-api.onrender.com/products/:id
   
     access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/products/promotions/:id
+/products/promotions/:id
 ```
 
 
@@ -197,7 +207,7 @@ https://homey-ecommerce-api.onrender.com/products/promotions/:id
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/order/checkout
+/order/checkout
 ```
 
 - User get his all previous orders
@@ -206,7 +216,7 @@ https://homey-ecommerce-api.onrender.com/order/checkout
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/order/user/orders
+/order/user/orders
 ```
 
 - User cancel (delete) order if it's in pending state
@@ -215,7 +225,7 @@ https://homey-ecommerce-api.onrender.com/order/user/orders
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/order/user/:orderId
+/order/user/:orderId
 ```
 
 
@@ -226,7 +236,7 @@ https://homey-ecommerce-api.onrender.com/order/user/:orderId
   
   access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/order/all
+/order/all
 ```
 
 - Modify order state
@@ -235,7 +245,7 @@ https://homey-ecommerce-api.onrender.com/order/all
   
   access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/order/:orderId
+/order/:orderId
 ```
 
 - Filter Orders by state
@@ -244,7 +254,7 @@ https://homey-ecommerce-api.onrender.com/order/:orderId
   
   access --> private [Admin]
 ```
-https://homey-ecommerce-api.onrender.com/order/state/:state
+/order/state/:state
 ```
 
 
@@ -255,7 +265,7 @@ https://homey-ecommerce-api.onrender.com/order/state/:state
   
   access --> private [User & Admin]
 ```
-https://homey-ecommerce-api.onrender.com/order/:orderId
+/order/:orderId
 ```
 
 
@@ -268,7 +278,7 @@ https://homey-ecommerce-api.onrender.com/order/:orderId
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/favorites
+/favorites
 ```
 
 - Add product in favorites
@@ -277,7 +287,7 @@ https://homey-ecommerce-api.onrender.com/favorites
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/favorites
+/favorites
 ```
 
 - Remove product from favorites
@@ -286,5 +296,5 @@ https://homey-ecommerce-api.onrender.com/favorites
   
   access --> private [User]
 ```
-https://homey-ecommerce-api.onrender.com/favorites
+/favorites
 ```
